@@ -1,11 +1,12 @@
-FROM golang:latest AS builder
-
-RUN apt-get update && apt-get install -y ca-certificates
+FROM golang:alpine AS builder
 
 ENV GOOS linux
 ENV GOARCH amd64
+ENV CGO_ENABLED 0
 
-RUN go get github.com/theverything/metrolinkstatus
+RUN apk --update add --no-cache ca-certificates git
+
+RUN go get -u github.com/theverything/metrolinkstatus/cli
 
 ########################################
 
@@ -13,6 +14,6 @@ FROM scratch
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
-COPY --from=builder /src/cli/cli /cli
+COPY --from=builder /go/bin/cli /cli
 
-CMD ["/cli"]
+ENTRYPOINT [ "/cli" ]

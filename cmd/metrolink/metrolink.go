@@ -60,7 +60,8 @@ var lineShortName = map[string]string{
 	"VT LINE":    "VT",
 }
 
-var metrolinkStations = map[string]string{
+// MetrolinkStations -
+var MetrolinkStations = map[string]string{
 	"ANAHEIM-CANYON":            "Anaheim Canyon",
 	"ARTIC":                     "Anaheim",
 	"BALDWINPARK":               "Baldwin Park",
@@ -219,7 +220,7 @@ func ProcessStation(station string, stationScheduleList []ScheduledStop) ([]byte
 	}
 
 	message := slackMsg{
-		Text:        fmt.Sprintf("%s Station - Scheduled Trains", metrolinkStations[station]),
+		Text:        fmt.Sprintf("%s Station - Scheduled Trains", MetrolinkStations[station]),
 		Attachments: trainStatusMsgs,
 	}
 

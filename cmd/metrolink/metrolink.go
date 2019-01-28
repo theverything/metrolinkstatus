@@ -192,13 +192,19 @@ func PushTrainStatusToSlack(body []byte, slackWebhookURL string, debug ...bool) 
 }
 
 // ProcessStation -
-func ProcessStation(station string, stationScheduleList []ScheduledStop) ([]byte, error) {
+func ProcessStation(station string, stationScheduleList []ScheduledStop, filter ...bool) ([]byte, error) {
 	var trainStatusMsgs []trainStatusMsg
+	shouldFilter := true
+
+	if len(filter) > 0 {
+		shouldFilter = filter[0]
+	}
 
 	for _, stop := range stationScheduleList {
 		calcStatus := trainStatus[stop.CalculatedStatus]
+		include := !shouldFilter || calcStatus != "good"
 
-		if stop.PlatformName == station && calcStatus != "good" {
+		if stop.PlatformName == station && include {
 			trainStatusMsgs = append(trainStatusMsgs, trainStatusMsg{
 				Text: fmt.Sprintf("%-17s %-2s %-6s %s on %s",
 					formatArrivalTime(stop),
